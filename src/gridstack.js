@@ -776,41 +776,60 @@
                 },
                 out: function(event, ui) {
                     var el = $(ui.draggable);
-                    el.unbind('drag', onDrag);
                     var node = el.data('_gridstack_node');
-                    node.el = null;
-                    self.grid.removeNode(node);
-                    self.placeholder.detach();
-                    self._updateContainerHeight();
-                    el.data('_gridstack_node', el.data('_gridstack_node_orig'));
+                    if(node) {
+                        el.unbind('drag', onDrag);
+                        node.el = null;
+                        self.grid.removeNode(node);
+                        self.placeholder.detach();
+                        self._updateContainerHeight();
+                        el.data('_gridstack_node', el.data('_gridstack_node_orig'));
+                    }
                 },
                 drop: function(event, ui) {
-                    self.placeholder.detach();
 
                     var node = $(ui.draggable).data('_gridstack_node');
-                    node._grid = self;
-                    var el = $(ui.draggable).clone(false);
-                    el.data('_gridstack_node', node);
-                    $(ui.draggable).remove();
-                    node.el = el;
-                    self.placeholder.hide();
-                    el
-                        .attr('data-gs-x', node.x)
-                        .attr('data-gs-y', node.y)
-                        .attr('data-gs-width', node.width)
-                        .attr('data-gs-height', node.height)
-                        .addClass(self.opts.itemClass)
-                        .removeAttr('style')
-                        .enableSelection()
-                        .removeData('draggable')
-                        .removeClass('ui-draggable ui-draggable-dragging ui-draggable-disabled')
-                        .unbind('drag', onDrag);
-                    self.container.append(el);
-                    self._prepareElementsByNode(el, node);
-                    self._updateContainerHeight();
-                    self._triggerChangeEvent();
 
-                    self.grid.endUpdate();
+
+                    // call my own callback here to add data to model in angular
+                    if(self.opts.droppable.handler) {
+                        self.opts.droppable.handler(event, ui);
+
+                        // remove the temporary "placeholder"
+                        self.grid.removeNode(node);
+
+
+                        self._updateContainerHeight();
+                        self._triggerChangeEvent();
+
+                        self.grid.endUpdate();
+
+                    } else {
+                        self.placeholder.detach();
+                        node._grid = self;
+                        var el = $(ui.draggable).clone(false);
+                        el.data('_gridstack_node', node);
+                        $(ui.draggable).remove();
+                        node.el = el;
+                        self.placeholder.hide();
+                        el
+                            .attr('data-gs-x', node.x)
+                            .attr('data-gs-y', node.y)
+                            .attr('data-gs-width', node.width)
+                            .attr('data-gs-height', node.height)
+                            .addClass(self.opts.itemClass)
+                            .removeAttr('style')
+                            .enableSelection()
+                            .removeData('draggable')
+                            .removeClass('ui-draggable ui-draggable-dragging ui-draggable-disabled')
+                            .unbind('drag', onDrag);
+                        self.container.append(el);
+                        self._prepareElementsByNode(el, node);
+                        self._updateContainerHeight();
+                        self._triggerChangeEvent();
+
+                        self.grid.endUpdate();
+                    }
                 }
             });
         }
@@ -929,6 +948,8 @@
             return;
         }
         var height = this.grid.getGridHeight();
+        // add that little bit of extra height
+        height += 2;
         this.container.attr('data-gs-current-height', height);
         if (!this.opts.cellHeight) {
             return ;
