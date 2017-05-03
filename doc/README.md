@@ -88,6 +88,7 @@ gridstack.js API
  - an integer (px)
  - a string (ex: '2em', '20px', '2rem')
 - `width` - amount of columns (default: `12`)
+- `extraSpace` - integer, adds this many extra rows to the bottom of the grid (default: `0`)
 
 ## Grid attributes
 

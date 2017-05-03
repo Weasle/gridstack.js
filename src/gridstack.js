@@ -547,7 +547,8 @@
             removable: false,
             removeTimeout: 2000,
             verticalMarginUnit: 'px',
-            cellHeightUnit: 'px'
+            cellHeightUnit: 'px',
+            extraSpace: 0
         });
 
         if (this.opts.rtl === 'auto') {
@@ -949,7 +950,8 @@
         }
         var height = this.grid.getGridHeight();
         // add that little bit of extra height
-        height += 2;
+        // this allows new widgets to be added easier to the bottom of the grid
+        height += this.opts.extraSpace;
         this.container.attr('data-gs-current-height', height);
         if (!this.opts.cellHeight) {
             return ;
