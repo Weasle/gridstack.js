@@ -774,6 +774,10 @@
                     el.data('_gridstack_node_orig', origNode);
 
                     el.on('drag', onDrag);
+
+                    if(self.opts.droppable && self.opts.droppable.overHandle) {
+                        self.opts.droppable.overHandle(event, ui);
+                    }
                 },
                 out: function(event, ui) {
                     var el = $(ui.draggable);
