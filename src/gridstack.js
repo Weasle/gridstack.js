@@ -790,6 +790,9 @@
                         self._updateContainerHeight();
                         el.data('_gridstack_node', el.data('_gridstack_node_orig'));
                     }
+                    if(self.opts.droppable && self.opts.droppable.outHandle) {
+                        self.opts.droppable.outHandle(event, ui);
+                    }
                 },
                 drop: function(event, ui) {
 
@@ -797,8 +800,8 @@
 
 
                     // call my own callback here to add data to model in angular
-                    if(self.opts.droppable.handler) {
-                        self.opts.droppable.handler(event, ui);
+                    if(self.opts.droppable && self.opts.droppable.dropHandler) {
+                        self.opts.droppable.dropHandler(event, ui);
 
                         // remove the temporary "placeholder"
                         self.grid.removeNode(node);
